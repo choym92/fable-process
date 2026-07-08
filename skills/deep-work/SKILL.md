@@ -28,5 +28,7 @@ pattern-matches a known problem may have a different cause in this codebase.
 
 Execute → run the done-conditions → any failure means fix and re-run. Exit the loop
 only when every condition passes, or when blocked by something only the user can
-decide. Record assumptions as you make them; surface them in the final report along
-with what was verified, how, and anything left undone.
+decide. On long runs, set a self-check interval and verify work-so-far against the
+done-conditions with a fresh-context subagent — fresh verifiers outperform
+self-critique. Record assumptions as you make them; surface them in the final
+report along with what was verified, how, and anything left undone.
