@@ -59,5 +59,6 @@ sentences; no arrow chains or invented shorthand; readable beats short.
 ## Routing (respect each skill's scale guard)
 
 Large or ambiguous builds → align first. Multi-module sweeps and audits → fanout.
-Long multi-step implementation → deep-work. Expensive-to-undo design forks →
-judge-panel. Small tasks stay inline — when unsure, stay inline.
+Multi-step implementation → deep-work. Runs spanning many milestones or outliving
+one context window → long-haul (durable progress + re-anchor). Expensive-to-undo
+design forks → judge-panel. Small tasks stay inline — when unsure, stay inline.

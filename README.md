@@ -60,6 +60,7 @@ for one-turn deep reasoning (the only thinking keyword the harness still honors)
 | `skills/align` | pre-build alignment — one question at a time, answers from the codebase first, no implementation until shared understanding |
 | `skills/fanout` | decompose → parallel Sonnet workers → capped Opus adversarial verify → synthesize |
 | `skills/deep-work` | verifiable done-conditions, loop until they hold, fresh-context self-checks on long runs |
+| `skills/long-haul` | hold coherence over hours/multi-session runs — durable progress file, re-anchor after context growth, commit checkpoints |
 | `skills/judge-panel` | independent candidates → Opus judges hunting failure modes → synthesis |
 | `agents/verifier` | refuter: "reading is not verification — run it"; guards against verification avoidance and first-80% seduction |
 | `workflows/fanout.js` | reference workflow script — run via `Workflow({scriptPath})` or copy to `~/.claude/workflows/` |
@@ -98,6 +99,38 @@ This plugin was not designed from intuition (2026-07-08):
 Token accounting (measured with `claude plugin details`): ~530 tokens always-on,
 ~550 while the style is active. Skill bodies load only on invocation; hooks and
 the workflow script cost zero model context.
+
+## Scenarios
+
+The router (the output style) sends each request to the lightest thing that fits.
+Only the "large & ambiguous" path asks you questions up front; elsewhere it acts and
+reports, pausing only for destructive, out-of-scope, or user-only decisions. Any path
+that changes code passes the verify gate before finishing.
+
+```mermaid
+flowchart TD
+  R[User request] --> Router{fable-process router}
+  Router -->|small, clear| Inline[Inline — just do it]
+  Router -->|question / problem statement| Assess[Assess only, no edits]
+  Router -->|large & ambiguous build| Align[align — confirm before building]
+  Router -->|multi-module sweep / audit| Fanout[fanout — parallel + adversarial verify]
+  Router -->|design fork| Judge[judge-panel — candidates + Opus judges]
+  Router -->|spans many milestones / sessions| LongHaul[long-haul — progress file + re-anchor]
+  Align --> DeepWork[deep-work loop]
+  LongHaul --> DeepWork
+  Inline --> Gate[verify gate on code change]
+  DeepWork --> Gate
+  Fanout --> Gate
+```
+
+| Request looks like | Goes to | You get asked? |
+|---|---|---|
+| small, unambiguous | inline | no |
+| a question / "what do you think" | assess only | no (won't edit) |
+| big and under-specified | `align` | yes — one question at a time |
+| "audit / sweep everything" | `fanout` | no (announces cost if >~10 agents) |
+| "which approach should we…" | `judge-panel` | no (recommends, doesn't menu) |
+| multi-day / multi-session build | `long-haul` | only at real checkpoints |
 
 ## How to prompt with it
 
