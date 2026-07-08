@@ -30,5 +30,7 @@ Execute → run the done-conditions → any failure means fix and re-run. Exit t
 only when every condition passes, or when blocked by something only the user can
 decide. On long runs, set a self-check interval and verify work-so-far against the
 done-conditions with a fresh-context subagent — fresh verifiers outperform
-self-critique. Record assumptions as you make them; surface them in the final
+self-critique. Record lessons to memory as you go — corrections and confirmed
+approaches alike, with why they mattered; update existing notes rather than
+duplicating. Record assumptions as you make them; surface them in the final
 report along with what was verified, how, and anything left undone.

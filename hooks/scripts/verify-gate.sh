@@ -21,7 +21,10 @@ verdict=$(tail -n 2000 "$transcript" 2>/dev/null | jq -Rrs '
     test("(^|[\\s;&|(])(pytest|vitest|jest|tsc|mypy|ruff|eslint|phpunit|rspec)\\b")
     or test("\\b(npm|pnpm|yarn|bun)(\\s+run)?\\s+(test|build|lint|typecheck|check)\\b")
     or test("\\b(make|cargo|go|mvn|gradle)\\s+(test|build|check|vet|verify)\\b")
-    or test("\\bpython3?\\s+-m\\s+(pytest|unittest)\\b");
+    or test("\\bpython3?\\s+-m\\s+(pytest|unittest|py_compile)\\b")
+    or test("\\bvalidate\\b")
+    or test("\\bnode\\s+--check\\b")
+    or test("\\bbash\\s+-n\\b");
   def editish_cmd:
     test("\\bsed\\s+-i") or test("\\bgit\\s+apply\\b")
     or test("(^|[\\s;&|])patch\\s") or test("\\btee\\s");

@@ -32,6 +32,14 @@ model magic. It is already written down in three places:
 fable-process transplants (1) and (2) into (3). Fable may close; the Fable way of
 working remains.
 
+**What this does NOT do.** Fable 5 and Opus are different models (Fable 5 shares
+its underlying model only with Mythos 5, a tier above Opus). This plugin
+transplants the *process* — the discipline, procedures, and enforcement — not the
+reasoning ceiling. On Opus, expect the same workflow with more iterations and
+shorter reliable autonomous stretches. That is exactly why the deterministic
+pieces (the verify gate, the adversarial verifier) matter more here than they
+would on Fable.
+
 ## How it works
 
 One always-on layer, three lazy layers:
@@ -90,6 +98,20 @@ This plugin was not designed from intuition (2026-07-08):
 Token accounting (measured with `claude plugin details`): ~530 tokens always-on,
 ~550 while the style is active. Skill bodies load only on invocation; hooks and
 the workflow script cost zero model context.
+
+## How to prompt with it
+
+Two habits from Anthropic's official guidance multiply what the plugin does:
+
+- **Give the reason, not only the request.** Intent lets the model connect the
+  task to relevant context instead of guessing:
+  `I'm working on [the larger task] for [who it's for]. They need [what the
+  output enables]. With that in mind: [request].`
+  (The `align` skill will ask for the missing "why" on large builds, but leading
+  with it saves the question.)
+- **Use the keywords deliberately.** `ultrathink` = one-turn deep reasoning;
+  `ultracode` = orchestrated multi-agent workflows; effort stays at your
+  configured level otherwise.
 
 ## Update
 
