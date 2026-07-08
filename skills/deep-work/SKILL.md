@@ -28,7 +28,10 @@ pattern-matches a known problem may have a different cause in this codebase.
 
 Execute → run the done-conditions → any failure means fix and re-run. Exit the loop
 only when every condition passes, or when blocked by something only the user can
-decide. On long runs, set a self-check interval and verify work-so-far against the
+decide. Tests and type checks verify CODE correctness, not FEATURE correctness —
+for user-facing changes, run the app and drive the actual flow (golden path plus
+one edge case); if you can't, say so in the report. Fix root causes; never clear
+an obstacle with --no-verify or a destructive shortcut. On long runs, set a self-check interval and verify work-so-far against the
 done-conditions with a fresh-context subagent — fresh verifiers outperform
 self-critique. Record lessons to memory as you go — corrections and confirmed
 approaches alike, with why they mattered; update existing notes rather than

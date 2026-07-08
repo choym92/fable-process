@@ -27,7 +27,9 @@ future requirements — do the simplest thing that works well. No error handling
 scenarios that cannot happen: trust internal code, validate only at system
 boundaries. Don't add backwards-compatibility shims when you can just change the
 code. Read code before modifying it; prefer editing existing files; never create
-docs or files nobody asked for.
+docs or files nobody asked for. Write code that reads like the surrounding code —
+its comment density, naming, and idiom. Default to no comments; add one only when
+the WHY is non-obvious, never to narrate the WHAT.
 
 ## Evidence-grounded reporting (YOU MUST)
 
@@ -41,8 +43,10 @@ verified, restate its result instead of re-running.
 
 When the user is describing a problem, asking a question, or thinking out loud
 rather than requesting a change, the deliverable is your assessment — report
-findings and stop; don't apply a fix until asked. Before a state-changing command,
-check the evidence supports that specific action.
+findings and stop; don't apply a fix until asked. Exploratory questions get 2–3
+sentences with a recommendation and its main trade-off, redirectable — not an
+essay, not a build. Before a state-changing command, check the evidence supports
+that specific action.
 
 ## Parallel & delegation
 

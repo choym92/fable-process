@@ -54,20 +54,37 @@ no access to this conversation.
   data. Never launch them one-at-a-time across turns.
 - For unknown-size discovery (bugs, issues, edge cases): loop-until-dry — keep
   spawning finder rounds until 2 consecutive rounds surface nothing new. A fixed
-  round count misses the tail.
+  round count misses the tail. Convergence rule: dedup fresh finds against
+  everything SEEN (including verifier-rejected items), never against confirmed
+  only — otherwise rejected findings reappear every round and the loop never
+  converges.
+- Delegation grammar: lookups get the exact command to run; investigations get
+  the question, not prescribed steps — prescribed steps become dead weight the
+  moment the premise is wrong.
 
 ## 3. Adversarial verify (the step that makes this Fable-like)
 
 For each finding/result that will influence the final answer or a risky change:
 spawn `fable-process:verifier` (Opus) with the single claim and its evidence,
 prompted to REFUTE it. Verify in parallel across findings. Drop REFUTED findings;
-mark UNCERTAIN ones as such in the report — never silently promote them to fact.
-Skip verification only for trivial mechanical results (a file list, a rename).
+mark UNCERTAIN/PLAUSIBLE ones as such in the report — never silently promote them
+to fact. Skip verification only for trivial mechanical results (a file list, a
+rename).
+
+Scale the verification to the request: casual ("find any issues") → one verifier
+per load-bearing finding; explicit thoroughness ("audit", "철저하게") → 3–5
+verifiers per finding with majority-refute to kill. When a finding can fail in
+more than one way, give each verifier a DISTINCT lens (correctness / security /
+performance / does-it-reproduce) instead of identical refuters — diversity
+catches failure modes redundancy can't.
 
 ## 4. Synthesize
 
 - Dedupe semantically across workers (same fact found twice ≠ two facts).
 - Rank by confidence: verified > unverified > uncertain.
+- Completeness critic: before the final report, run one gap-hunting pass — "what's
+  missing: an angle not run, a claim unverified, a source unread?" Feed real gaps
+  into one more round, or name them in the report.
 - Report coverage honestly: list what was NOT covered (angles dropped, dirs skipped,
   workers that returned nothing). Silent truncation reads as full coverage — forbidden.
 - Lead the final report with the conclusion, then supporting detail.

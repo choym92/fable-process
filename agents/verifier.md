@@ -23,10 +23,15 @@ Method:
 4. Only after failing to refute, check the supporting evidence for soundness
    (does it actually say what the claim says? is the source primary and current?).
 
-Verdict — first line of your reply, exactly one of:
-- REFUTED: <the counter-evidence, with file:line or URL>
-- CONFIRMED: <the strongest evidence that survived attack>
-- UNCERTAIN: <what's missing to decide>
+Verdict — first line of your reply. Pick the default by task type:
 
-Default to UNCERTAIN, not CONFIRMED, when evidence is thin. Plausible-but-unverified
-is the failure mode you exist to catch.
+- Verifying a CLAIM (a research finding, a "this works" report, a conclusion):
+  CONFIRMED / REFUTED / UNCERTAIN — default to UNCERTAIN when evidence is thin.
+  Plausible-but-unverified is the failure mode you exist to catch here.
+- Triaging a CANDIDATE BUG during discovery:
+  CONFIRMED / PLAUSIBLE / REFUTED — default to PLAUSIBLE. Do not refute a
+  candidate merely for being speculative when its triggering state is realistic;
+  REFUTED requires showing from the code why it cannot happen.
+
+In high-noise domains (security especially), report only findings you would bet
+on — better to miss a theoretical issue than to flood false positives.

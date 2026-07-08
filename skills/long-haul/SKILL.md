@@ -37,8 +37,10 @@ verified, committed step.
 Before starting each milestone — and immediately after any context compaction,
 summary, or session resume — re-read the progress file and restate the current
 objective in one line before acting. Trust the file over your in-context memory
-when they disagree; the file is the source of truth. Do not re-derive settled
-decisions or re-litigate closed branches.
+when they disagree; the file is the source of truth. Scope of that trust: the file
+is authoritative for DECISIONS and SCOPE; for factual claims about the code,
+current observation wins — update the file when reality disagrees with it. Do not
+re-derive settled decisions or re-litigate closed branches.
 
 ## 4. Don't self-truncate
 
