@@ -2,110 +2,94 @@
 
 > Unofficial community plugin. Not affiliated with or endorsed by Anthropic.
 
-Fable 5-style work process for Claude Code, on any model (built for Opus after
-Fable 5 access ends 2026-07-12). Packages the process — parallel fan-out,
-adversarial verification, outcome-driven autonomy, self-verification before
-stopping — as a portable personal plugin: install it on any machine, use it in
-any project.
-
-Based on verified research (2026-07-08): the Fable "process" is almost entirely
-Claude Code **harness** machinery (workflows/ultracode, subagents, skills, hooks,
-output styles, memory — all model-agnostic), while the model-specific residual is
-*disposition* (unprompted parallelism, investigation, self-verification). This
-plugin re-imposes that disposition on Opus via an output style, skills, tiered
-agents, and a light Stop-hook verification gate.
-
-## What's inside
-
-| Piece | What it does | Model |
-|---|---|---|
-| `skills/align` | pre-build alignment — one question at a time until shared understanding | session |
-| `skills/fanout` | decompose → parallel workers → adversarial verify → synthesize | tiered |
-| `skills/deep-work` | outcome-driven autonomous loop, verify-before-stop | session |
-| `skills/judge-panel` | N independent candidates → Opus judges → synthesis | tiered |
-| `skills/setup` | one-time install of the output style + settings check | — |
-| `agents/explorer` | read-only parallel recon worker | Sonnet |
-| `agents/worker` | scoped implementation/collection worker | Sonnet |
-| `agents/verifier` | adversarial refuter (CONFIRMED/REFUTED/UNCERTAIN) | Opus xhigh |
-| `agents/judge` | candidate scorer with failure-mode hunting | Opus xhigh |
-| `workflows/fanout.js` | generic fan-out workflow — reference code, not auto-registered (run via `Workflow({scriptPath})` or copy to `~/.claude/workflows/`) | tiered |
-| `hooks/verify-gate.sh` | Stop hook: edited-but-unverified → one nudge to verify | — |
-| `output-styles/fable-process.md` | the disposition, injected into the system prompt | — |
-
-Cost model: workers are Sonnet, judgment (verify/judge/decompose) is Opus. Keep it.
-
-Token accounting (measured with `claude plugin details`): ~530 tokens always-on
-(skill/agent descriptions in every session), plus ~550 tokens while the output
-style is active. Skill bodies (250–1.1k) load only on invocation; hooks and the
-workflow script cost zero model context. The fanout workflow hard-caps Opus
-verification at 20 calls per run and verifies only load-bearing findings.
-
-## Design sources
-
-The discipline rules are not invented — they are transplanted from where Anthropic
-already wrote them:
-
-- **[Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5)**
-  (official): the minimal-diff fragment, the evidence-audit fragment ("nearly
-  eliminated fabricated status reports" in Anthropic's testing), the never-end-on-
-  a-promise rule, scope boundaries, async subagent delegation, and fresh-context
-  verifiers over self-critique.
-- **Claude Code source** (system prompt internals): verification discipline
-  ("reading is not verification — run it"), faithful outcome reporting, comment
-  and file-creation restraint, "delegate context, not understanding", and the
-  adversarial verification agent's design (named failure modes: verification
-  avoidance, first-80% seduction).
-- **Community-proven patterns**: hooks-as-deterministic-enforcement (Anthropic
-  best practices; Stop hooks are overridden after 8 consecutive blocks — ours
-  blocks once), concise CLAUDE.md with IMPORTANT/YOU MUST emphasis markers, the
-  Explore → Plan → Implement → Commit flow, and one-question-at-a-time alignment
-  interviews (à la Matt Pocock's grilling loop; `align` is an original
-  implementation of the same idea).
-
-Note: this plugin targets **Opus and below**. Anthropic warns that skills written
-for prior models are often too prescriptive for Fable-class models and can degrade
-their output — on Fable 5/Mythos 5, consider switching the output style off.
-
-## Install (any machine)
+**Fable-style discipline for any Claude model.** When Claude Fable 5 is
+unavailable — or you're running Opus or Sonnet — this plugin keeps its *process*:
+outcome-driven autonomy, parallel fan-out with adversarial verification, minimal
+diffs, and evidence-grounded reporting.
 
 ```
-# from GitHub:
 /plugin marketplace add choym92/fable-process
 /plugin install fable-process@fable-process
-
-# or test locally without installing:
-claude --plugin-dir /path/to/fable-process
+/fable-process:setup          # once per machine
+/output-style fable-process   # or "outputStyle": "fable-process" in settings
 ```
 
-The repo is private, so the machine needs GitHub auth that can clone it
-(`gh auth login`, or an SSH key on the account).
+## The idea
 
-Then once per machine:
+Fable 5's "way of working" turns out to be mostly reproducible machinery, not
+model magic. It is already written down in three places:
 
-```
-/fable-process:setup        # installs the output style, checks settings
-/output-style fable-process # activate the disposition
-```
+1. **Anthropic's official [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5)
+   guide** — publishes the exact prompt fragments that produce the behavior
+   (minimal diff, evidence-audited reporting, never ending a turn on a promise).
+2. **Claude Code's harness internals** — the system prompt imposes discipline
+   rules on whatever model runs; the strictest ones (run-don't-read verification,
+   faithful outcome reporting, comment restraint) ship behind an internal-only
+   flag that ordinary accounts never receive.
+3. **Claude Code's extension system** — output styles, skills, subagents, and
+   hooks are model-agnostic and available to everyone.
 
-Recommended `~/.claude/settings.json` baseline:
+fable-process transplants (1) and (2) into (3). Fable may close; the Fable way of
+working remains.
 
-```json
-{
-  "effortLevel": "xhigh",
-  "outputStyle": "fable-process"
-}
-```
+## How it works
 
-## Use
+One always-on layer, three lazy layers:
 
-- Big/thorough task → `/fable-process:fanout <task>`, or just say `ultracode` in the
-  prompt (harness keyword — orchestrated workflows work on Opus).
-- Multi-step implementation → `/fable-process:deep-work <task>`.
-- Design fork → `/fable-process:judge-panel <problem>`.
-- One-off deeper reasoning → include `ultrathink` in the prompt (harness keyword,
-  model-agnostic). `/effort max` for a whole session (Opus only, session-scoped).
-- Generic workflow: `Workflow({scriptPath: ".../workflows/fanout.js", args: "<task>"})`
-  — or let the fanout skill author a task-specific script.
+| Layer | Mechanism | Context cost | Role |
+|---|---|---|---|
+| Output style | system-prompt injection | ~550 tok while active | The disposition — act-don't-ask, minimal diff, evidence-grounded reports — and routes big work to the skills |
+| Skills (5) | auto-invoke on matching situations, or `/fable-process:<name>` | 1 line each idle; body only on invoke | The procedures: `align`, `fanout`, `deep-work`, `judge-panel`, `setup` |
+| Agents (4) | delegated subagent workers | only when used | Tiered cost: Sonnet (`explorer`, `worker`) does the work, Opus xhigh (`verifier`, `judge`) judges it |
+| Hook | shell script on Stop / SubagentStop | 0 tok | Deterministic enforcement: edited-but-unverified → one nudge to verify |
+
+Drive it with nothing (auto-routing), or explicitly: `ultrathink` in any prompt
+for one-turn deep reasoning (the only thinking keyword the harness still honors),
+`ultracode` for orchestrated multi-agent workflows, or the slash commands.
+
+| Piece | What it does |
+|---|---|
+| `skills/align` | pre-build alignment — one question at a time, answers from the codebase first, no implementation until shared understanding |
+| `skills/fanout` | decompose → parallel Sonnet workers → capped Opus adversarial verify → synthesize |
+| `skills/deep-work` | verifiable done-conditions, loop until they hold, fresh-context self-checks on long runs |
+| `skills/judge-panel` | independent candidates → Opus judges hunting failure modes → synthesis |
+| `agents/verifier` | refuter: "reading is not verification — run it"; guards against verification avoidance and first-80% seduction |
+| `workflows/fanout.js` | reference workflow script — run via `Workflow({scriptPath})` or copy to `~/.claude/workflows/` |
+| `hooks/verify-gate.sh` | turn-scoped Stop gate, fails open, blocks at most once |
+
+## The research behind it
+
+This plugin was not designed from intuition (2026-07-08):
+
+- **Two deep-research workflow runs (~200 subagents)** swept Anthropic docs,
+  Reddit, GitHub, and engineering blogs; every surviving claim passed 3-0
+  adversarial verification against live primary sources.
+- **A source-level audit of Claude Code's internals** extracted the ten most
+  load-bearing behavioral rules the harness imposes on its model.
+- **The plugin itself was red-teamed** by independent agents: six
+  empirically-confirmed defects in v0.2 — hook false-blocks from stale turns, an
+  unbounded Opus verification path — were found by executing the hook against
+  synthetic transcripts, then fixed and re-tested 10/10 in v0.3.
+
+## Findings → design
+
+| Verified finding | Where it landed |
+|---|---|
+| Official anti-over-engineering fragment: "Don't add features, refactor, or introduce abstractions beyond what the task requires" | style · Minimal diff |
+| Official evidence-audit fragment — "nearly eliminated fabricated status reports" in Anthropic's testing | style · Evidence-grounded reporting |
+| Official early-stopping fix — never end a turn on a plan, question, or promise | style · Act, then keep acting |
+| CLAUDE.md is advisory; hooks are deterministic (official best practices) | `verify-gate` on Stop + SubagentStop |
+| Fresh-context verifiers outperform self-critique (official) | `verifier` agent + deep-work self-check interval |
+| Harness internals: "reading is not verification — run it"; failure modes named "verification avoidance" and "first-80% seduction" | `verifier` system prompt |
+| Harness internals: brief subagents like "a colleague who just walked in"; delegate context, never understanding | `explorer`/`worker` briefs + style · Delegation |
+| One-question-at-a-time alignment interviews (à la Matt Pocock's grilling loop) | `align` skill (original implementation) |
+| Fable dispatches parallel subagents readily; prefer async orchestration (official) | `fanout` skill + workflow script |
+| "Skills for prior models are often too prescriptive for Fable 5" (official) | plugin targets Opus and below; switch the style off on Fable-class models |
+| Community: unbounded auto fan-out burns tokens (fable-mode, TDD Guard, hooks-mastery precedents) | default-deny scale guards; workflow hard-caps Opus verification at 20 |
+
+Token accounting (measured with `claude plugin details`): ~530 tokens always-on,
+~550 while the style is active. Skill bodies load only on invocation; hooks and
+the workflow script cost zero model context.
 
 ## Update
 
@@ -122,23 +106,22 @@ the output style needs the setup re-run.
 
 Skills are fully auto-invocable by design (Fable-like proactivity): Claude routes
 large ambiguous builds to `align`, big decomposable work to `fanout`, multi-step
-implementation to `deep-work`, and design forks to `judge-panel` on its own. The counterweight is each skill's scale
-guard — small tasks stay inline, fan-out defaults to 3 angles (7 only on explicit
-thoroughness signals), only load-bearing findings get Opus verification, and plans
-above ~10 agents are announced with cost before launch.
+implementation to `deep-work`, and design forks to `judge-panel` on its own. The
+counterweight is each skill's scale guard — small tasks stay inline, fan-out is
+default-deny (one explorer scouts first when breadth is unproven), only
+load-bearing findings get Opus verification, and plans above ~10 agents are
+announced with cost before launch.
 
 ## Requirements & notes
 
 - Claude Code >= 2.1.154 (dynamic workflows); >= 2.1.198 recommended (background
   subagents by default). Workflows may need enabling in `/config` on some plans.
-- The Stop-hook gate fails open (any parse issue → no block) and blocks at most
-  once per stop (`stop_hook_active` check).
-- Output styles can't ship inside plugins (a plugin-system limitation — plugins
-  bundle skills/agents/hooks/MCP, not styles), hence the `setup` skill copies it
-  to `~/.claude/output-styles/`. Re-run `setup` after updating the plugin if the
-  style changed.
-- The verify gate registers on both `Stop` and `SubagentStop`, so delegated
-  worker edits get the same nudge. It checks that a verification command ran,
-  not that it succeeded — honest failure reporting is the output style's job.
-- The output style is language-neutral (English). To pin a response language,
-  add a one-line Language section to your copy in `~/.claude/output-styles/`.
+- Output styles can't ship inside plugins (a plugin-system limitation), hence the
+  `setup` skill copies it to `~/.claude/output-styles/`.
+- The verify gate checks that a verification command ran, not that it succeeded —
+  honest failure reporting is the output style's job. It fails open and blocks at
+  most once per stop.
+- The output style is language-neutral (English). To pin a response language, add
+  a one-line Language section to your copy in `~/.claude/output-styles/`.
+
+MIT — see [LICENSE](LICENSE).
