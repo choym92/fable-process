@@ -25,22 +25,31 @@ agents, and a light Stop-hook verification gate.
 | `agents/worker` | scoped implementation/collection worker | Sonnet |
 | `agents/verifier` | adversarial refuter (CONFIRMED/REFUTED/UNCERTAIN) | Opus xhigh |
 | `agents/judge` | candidate scorer with failure-mode hunting | Opus xhigh |
-| `workflows/fanout.js` | generic parameterized fan-out workflow script | tiered |
+| `workflows/fanout.js` | generic fan-out workflow — reference code, not auto-registered (run via `Workflow({scriptPath})` or copy to `~/.claude/workflows/`) | tiered |
 | `hooks/verify-gate.sh` | Stop hook: edited-but-unverified → one nudge to verify | — |
 | `output-styles/fable-process.md` | the disposition, injected into the system prompt | — |
 
 Cost model: workers are Sonnet, judgment (verify/judge/decompose) is Opus. Keep it.
 
+Token accounting (measured with `claude plugin details`): ~490 tokens always-on
+(skill/agent descriptions in every session), plus ~350 tokens while the output
+style is active. Skill bodies (250–1.1k) load only on invocation; hooks and the
+workflow script cost zero model context. The fanout workflow hard-caps Opus
+verification at 20 calls per run and verifies only load-bearing findings.
+
 ## Install (any machine)
 
 ```
-# from GitHub (after pushing this repo):
-/plugin marketplace add <github-user>/fable-process
+# from GitHub:
+/plugin marketplace add choym92/fable-process
 /plugin install fable-process@fable-process
 
 # or test locally without installing:
 claude --plugin-dir /path/to/fable-process
 ```
+
+The repo is private, so the machine needs GitHub auth that can clone it
+(`gh auth login`, or an SSH key on the account).
 
 Then once per machine:
 
@@ -94,8 +103,12 @@ above ~10 agents are announced with cost before launch.
   subagents by default). Workflows may need enabling in `/config` on some plans.
 - The Stop-hook gate fails open (any parse issue → no block) and blocks at most
   once per stop (`stop_hook_active` check).
-- Output styles can't ship inside plugins — hence the `setup` skill copies it to
-  `~/.claude/output-styles/`. Re-run `setup` after updating the plugin if the
+- Output styles can't ship inside plugins (a plugin-system limitation — plugins
+  bundle skills/agents/hooks/MCP, not styles), hence the `setup` skill copies it
+  to `~/.claude/output-styles/`. Re-run `setup` after updating the plugin if the
   style changed.
+- The verify gate registers on both `Stop` and `SubagentStop`, so delegated
+  worker edits get the same nudge. It checks that a verification command ran,
+  not that it succeeded — honest failure reporting is the output style's job.
 - The output style responds in Korean by default (personal preference) — edit
   `output-styles/fable-process.md` to change.

@@ -1,35 +1,60 @@
-#!/bin/bash
-# fable-process light verification gate (Stop hook).
-# If files were edited this turn and no verification-ish command (test/build/lint/…)
-# ran afterwards, block the stop ONCE and ask Claude to verify or justify skipping.
-# Fails open: any parsing problem → exit 0 (never breaks the session).
+#!/usr/bin/env bash
+# fable-process light verification gate (Stop + SubagentStop hook).
+# Blocks a stop at most once when the CURRENT TURN (events after the last genuine
+# user message) edited files and no verification-shaped command ran afterwards.
+# Checks that a verify command RAN, not that it succeeded — honest reporting of
+# failures is the output style's job.
+# Fails open: jq missing, unreadable transcript, or any parse problem → exit 0.
 set -u
 
 input=$(cat 2>/dev/null) || exit 0
 command -v jq >/dev/null 2>&1 || exit 0
 
-# Never block twice: stop_hook_active=true means we already blocked this stop.
 stop_active=$(printf '%s' "$input" | jq -r '.stop_hook_active // false' 2>/dev/null) || exit 0
 [ "$stop_active" = "true" ] && exit 0
 
 transcript=$(printf '%s' "$input" | jq -r '.transcript_path // empty' 2>/dev/null) || exit 0
 { [ -n "$transcript" ] && [ -f "$transcript" ]; } || exit 0
 
-# Only look at the recent tail — cheap and covers the current turn.
-recent=$(tail -n 800 "$transcript" 2>/dev/null) || exit 0
+verdict=$(tail -n 2000 "$transcript" 2>/dev/null | jq -Rrs '
+  def verifyish:
+    test("(^|[\\s;&|(])(pytest|vitest|jest|tsc|mypy|ruff|eslint|phpunit|rspec)\\b")
+    or test("\\b(npm|pnpm|yarn|bun)(\\s+run)?\\s+(test|build|lint|typecheck|check)\\b")
+    or test("\\b(make|cargo|go|mvn|gradle)\\s+(test|build|check|vet|verify)\\b")
+    or test("\\bpython3?\\s+-m\\s+(pytest|unittest)\\b");
+  def editish_cmd:
+    test("\\bsed\\s+-i") or test("\\bgit\\s+apply\\b")
+    or test("(^|[\\s;&|])patch\\s") or test("\\btee\\s");
+  [ split("\n")[] | fromjson? // empty
+    | if .type == "user"
+        and ((.message.content | type) == "string"
+             or ((.message.content | type) == "array"
+                 and ([.message.content[]? | select(.type == "tool_result")] | length) == 0))
+      then "user"
+      elif .type == "assistant"
+      then (.message.content[]? | select(.type == "tool_use")
+            | if .name == "Edit" or .name == "Write" or .name == "NotebookEdit"
+              then "edit"
+              elif .name == "Bash"
+              then ((.input.command // "")
+                    | if editish_cmd then "edit"
+                      elif verifyish then "verify"
+                      else "other" end)
+              else empty end)
+      else empty
+      end
+  ]
+  | (rindex(["user"])) as $u
+  | (if $u == null then . else .[($u + 1):] end)
+  | (rindex(["edit"])) as $e
+  | (rindex(["verify"])) as $v
+  | if $e == null then "pass"
+    elif $v == null or $v < $e then "block"
+    else "pass"
+    end
+' 2>/dev/null) || exit 0
 
-last_edit=$(printf '%s\n' "$recent" \
-  | grep -nE '"name" *: *"(Edit|Write|NotebookEdit)"' \
-  | tail -1 | cut -d: -f1)
-[ -n "$last_edit" ] || exit 0
-
-last_verify=$(printf '%s\n' "$recent" \
-  | grep -nEi '"command" *: *"[^"]*(test|lint|build|tsc|typecheck|pytest|vitest|jest|cargo (check|test)|go (vet|test)|ruff|mypy)' \
-  | tail -1 | cut -d: -f1)
-
-if [ -z "$last_verify" ] || [ "$last_edit" -gt "$last_verify" ]; then
-  jq -n '{decision: "block", reason: "fable-process verify gate: files were edited this turn but no verification command (test/build/lint) ran afterwards. Run the appropriate verification and report the result before finishing. If verification is impossible or meaningless for this change (docs, config, scratch files), state that in one line and finish."}'
-  exit 0
+if [ "$verdict" = "block" ]; then
+  jq -n '{decision: "block", reason: "fable-process verify gate: this turn edited files but no verification command (test/build/lint) ran afterwards. Run the appropriate verification and report the result. If a subagent already verified this work, restate its result instead of re-running. If verification is meaningless for this change (docs, config, scratch files), say so in one line and finish."}'
 fi
-
 exit 0

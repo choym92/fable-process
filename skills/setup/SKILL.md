@@ -13,9 +13,11 @@ the installed plugin's `.claude-plugin/plugin.json` and reporting its version.
 
 Output styles cannot ship inside a plugin, so copy it to the user level:
 
-- Locate this plugin's root: use `$CLAUDE_PLUGIN_ROOT` if set; otherwise find it with
-  `find ~/.claude/plugins -type d -name "fable-process*" -maxdepth 4 2>/dev/null`
-  (pick the directory containing `output-styles/fable-process.md`).
+- Locate the style file: use `$CLAUDE_PLUGIN_ROOT/output-styles/fable-process.md`
+  if that env var is set; otherwise
+  `find ~/.claude/plugins -type f -name "fable-process.md" -path "*output-styles*" 2>/dev/null`
+  and pick the newest match (installed copies live under a versioned path like
+  `plugins/cache/fable-process/fable-process/<version>/`).
 - `mkdir -p ~/.claude/output-styles` and copy `output-styles/fable-process.md` there.
   If a file already exists, compare first and overwrite only if it differs (show diff).
 

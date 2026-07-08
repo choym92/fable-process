@@ -7,8 +7,9 @@ description: Generate independent candidate approaches, score with parallel Opus
 
 Problem: $ARGUMENTS (if empty, apply to the decision under discussion).
 
-Beats one-attempt-iterated whenever the solution space is wide. Skip it when there
-is one conventional answer — this pattern is for genuine forks.
+Beats one-attempt-iterated whenever the solution space is wide. Scale guard: skip
+it when there is one conventional answer, and skip it when the choice is cheaply
+reversible — a panel is for decisions that are expensive to undo.
 
 ## 1. Diverge (parallel candidates)
 
