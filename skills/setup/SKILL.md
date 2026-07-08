@@ -1,12 +1,13 @@
 ---
 name: setup
-description: One-time setup after installing the fable-process plugin — installs the fable-process output style into ~/.claude/output-styles, checks effort settings and Claude Code version, and prints usage instructions.
+description: One-time setup (re-run after plugin updates) — installs the fable-process output style, checks effort settings and Claude Code version, prints usage.
 disable-model-invocation: true
 ---
 
-# fable-process setup (run once per machine)
+# fable-process setup (run once per machine, and after every plugin update)
 
-Perform these steps, then report results in the user's language:
+Perform these steps, then report results in the user's language. Start by reading
+the installed plugin's `.claude-plugin/plugin.json` and reporting its version.
 
 ## 1. Install the output style
 

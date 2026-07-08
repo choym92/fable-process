@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Adversarial verifier. Given a claim, finding, or diff, actively tries to REFUTE it with concrete evidence. Use before reporting important conclusions, merging risky changes, or accepting worker results in a fan-out. Expensive (Opus) — reserve for findings that matter.
+description: Adversarial verifier — tries to REFUTE a claim, finding, or diff with concrete evidence. Opus, expensive; use on load-bearing conclusions only.
 tools: Read, Glob, Grep, Bash, WebFetch, WebSearch
 model: opus
 effort: xhigh

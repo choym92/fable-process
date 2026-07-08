@@ -69,6 +69,25 @@ Recommended `~/.claude/settings.json` baseline:
 - Generic workflow: `Workflow({scriptPath: ".../workflows/fanout.js", args: "<task>"})`
   — or let the fanout skill author a task-specific script.
 
+## Update
+
+```
+/plugin update fable-process   # pull latest from the marketplace repo
+/fable-process:setup           # re-sync the output style (shows a diff if changed)
+```
+
+Restart the session after updating. Skills/agents/hooks apply automatically; only
+the output style needs the setup re-run.
+
+## Auto-invocation & cost control
+
+Skills are fully auto-invocable by design (Fable-like proactivity): Claude routes
+big decomposable work to `fanout`, multi-step implementation to `deep-work`, and
+design forks to `judge-panel` on its own. The counterweight is each skill's scale
+guard — small tasks stay inline, fan-out defaults to 3 angles (7 only on explicit
+thoroughness signals), only load-bearing findings get Opus verification, and plans
+above ~10 agents are announced with cost before launch.
+
 ## Requirements & notes
 
 - Claude Code >= 2.1.154 (dynamic workflows); >= 2.1.198 recommended (background

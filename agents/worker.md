@@ -1,6 +1,6 @@
 ---
 name: worker
-description: Implementation and collection worker for parallel fan-out. Executes one well-scoped subtask end-to-end (edit files, run commands, gather and transform data) and reports concrete results. Use for the "do" stage of decomposed work.
+description: Scoped implementation/collection worker for parallel fan-out. Completes one self-contained subtask end-to-end and reports concrete results.
 model: sonnet
 ---
 

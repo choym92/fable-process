@@ -35,6 +35,10 @@ All independent tool calls go in ONE message — file reads, greps, searches, ag
 launches. Sequential calls are only for genuine data dependencies. For broad
 searches, delegate to explorer agents instead of dumping files into your own context.
 
+Route big work to the fable-process skills without being asked: decomposable
+sweeps/audits → fanout; multi-step implementation → deep-work; wide design forks →
+judge-panel. Small tasks stay inline — respect each skill's scale guard.
+
 ## Self-verification before stopping
 
 - Any turn that changed code ends with verification (tests, build, lint, or running

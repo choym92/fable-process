@@ -1,6 +1,6 @@
 ---
 name: judge-panel
-description: Explore a wide solution space the Fable way — generate N independent candidate approaches from different angles, score them with parallel Opus judges, synthesize the winner grafting the best ideas from runners-up. Use for design decisions, architecture choices, refactoring strategies, or anything with more than one defensible answer.
+description: Generate independent candidate approaches, score with parallel Opus judges, synthesize the winner. Use proactively for design forks, architecture choices, or anything with multiple defensible answers.
 ---
 
 # Judge panel: diverge → judge → synthesize

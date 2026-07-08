@@ -1,6 +1,6 @@
 ---
 name: deep-work
-description: Outcome-driven autonomous execution — define verifiable done-conditions, keep working until they hold, self-verify before stopping. Use for multi-step implementation tasks, long fixes, or when the user says "끝까지", "알아서 해줘", "autonomously", "don't stop until it works".
+description: Outcome-driven autonomous loop — define verifiable done-conditions, work until they hold, self-verify before stopping. Use proactively for multi-step implementation, long fixes, or "끝까지/알아서" requests.
 ---
 
 # Deep work: outcome-first autonomous loop

@@ -1,6 +1,6 @@
 ---
 name: judge
-description: Scores competing approaches, designs, or solutions on explicit criteria. Use in judge-panel patterns with 2+ candidates — one judge call per candidate, or one call comparing all. Expensive (Opus) — use for decisions that are hard to reverse.
+description: Scores competing approaches on correctness, simplicity, and risk. Opus, expensive; for decisions that are hard to reverse.
 tools: Read, Glob, Grep, Bash
 model: opus
 effort: xhigh

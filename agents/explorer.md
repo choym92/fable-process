@@ -1,6 +1,6 @@
 ---
 name: explorer
-description: Read-only reconnaissance worker for parallel fan-out. Use when a task needs broad searching across code, docs, or the web and only the conclusions matter. Safe to run many in parallel. Does NOT edit files.
+description: Read-only recon worker for parallel fan-out across code, docs, or web. Returns conclusions only, never edits. Safe to run many in parallel.
 tools: Read, Glob, Grep, Bash, WebFetch, WebSearch
 model: sonnet
 ---
