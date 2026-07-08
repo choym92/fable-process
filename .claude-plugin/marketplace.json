@@ -1,0 +1,12 @@
+{
+  "name": "fable-process",
+  "description": "Personal marketplace for the fable-process plugin — Fable 5-style work process on any model",
+  "owner": { "name": "Paul Cho", "email": "choym92@gmail.com" },
+  "plugins": [
+    {
+      "name": "fable-process",
+      "source": "./",
+      "description": "Fable 5-style work process on any model: parallel fan-out, adversarial verification, outcome-driven autonomy, light verification gate"
+    }
+  ]
+}
