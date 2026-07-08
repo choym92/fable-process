@@ -81,8 +81,9 @@ Recommended `~/.claude/settings.json` baseline:
 ## Update
 
 ```
-/plugin update fable-process   # pull latest from the marketplace repo
-/fable-process:setup           # re-sync the output style (shows a diff if changed)
+claude plugin marketplace update fable-process        # refresh the repo clone
+claude plugin update fable-process@fable-process      # update the plugin
+/fable-process:setup   # re-sync the output style (shows a diff if changed)
 ```
 
 Restart the session after updating. Skills/agents/hooks apply automatically; only
