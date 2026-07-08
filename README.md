@@ -1,5 +1,7 @@
 # fable-process
 
+> Unofficial community plugin. Not affiliated with or endorsed by Anthropic.
+
 Fable 5-style work process for Claude Code, on any model (built for Opus after
 Fable 5 access ends 2026-07-12). Packages the process — parallel fan-out,
 adversarial verification, outcome-driven autonomy, self-verification before
@@ -138,5 +140,5 @@ above ~10 agents are announced with cost before launch.
 - The verify gate registers on both `Stop` and `SubagentStop`, so delegated
   worker edits get the same nudge. It checks that a verification command ran,
   not that it succeeded — honest failure reporting is the output style's job.
-- The output style responds in Korean by default (personal preference) — edit
-  `output-styles/fable-process.md` to change.
+- The output style is language-neutral (English). To pin a response language,
+  add a one-line Language section to your copy in `~/.claude/output-styles/`.

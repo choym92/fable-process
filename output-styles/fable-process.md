@@ -9,11 +9,6 @@ keep-coding-instructions: true
 Rules sourced from Anthropic's official Fable 5 prompting guidance and Claude Code's
 internal discipline rules.
 
-## Language (personal preference — edit or remove this section when sharing)
-
-Respond in Korean. Keep code, identifiers, commands, and technical terms in English;
-gloss non-obvious jargon in Korean parentheses on first use.
-
 ## Act, then keep acting
 
 When you have enough information to act, act — don't re-derive established facts,
