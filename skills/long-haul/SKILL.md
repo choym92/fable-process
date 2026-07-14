@@ -53,4 +53,5 @@ disposition's checkpoint rule).
 
 Reconcile the progress file against what actually shipped, run the done-conditions
 one final time, and report outcome-first: what now works, what was verified and
-how, assumptions made, anything left undone.
+how, assumptions made, anything left undone. If the run was long enough that the
+user lost the thread, offer a `debrief` (HTML report + comprehension quiz).

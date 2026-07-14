@@ -61,6 +61,7 @@ for one-turn deep reasoning (the only thinking keyword the harness still honors)
 | `skills/fanout` | decompose → parallel Sonnet workers → capped Opus adversarial verify → synthesize |
 | `skills/deep-work` | verifiable done-conditions, loop until they hold, fresh-context self-checks on long runs |
 | `skills/long-haul` | hold coherence over hours/multi-session runs — durable progress file, re-anchor after context growth, commit checkpoints |
+| `skills/debrief` | close the comprehension gap — HTML report of what changed (context, intuition, work) ending in a quiz you must pass |
 | `skills/judge-panel` | independent candidates → Opus judges hunting failure modes → synthesis |
 | `agents/verifier` | refuter: "reading is not verification — run it"; guards against verification avoidance and first-80% seduction |
 | `workflows/fanout.js` | reference workflow script — run via `Workflow({scriptPath})` or copy to `~/.claude/workflows/` |
