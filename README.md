@@ -64,6 +64,8 @@ for one-turn deep reasoning (the only thinking keyword the harness still honors)
 | `skills/debrief` | close the comprehension gap — HTML report of what changed (context, intuition, work) ending in a quiz you must pass |
 | `skills/refine` | harness garbage collection — turn each session's friction (gate blocks, corrections, "continue" nudges) into durable rules |
 | `skills/insights` | insight ledger for analysis work — curated INSIGHTS.md so findings survive context bloat and session ends |
+| `skills/scaffold` | bootstrap a project's harnessed environment — .fable/ docs, tagged pointer-based WORKLOG convention, per-domain agents that read & maintain it |
+| `hooks/session-log-commit.sh` | SessionEnd safety net: auto-commits `.fable/` + CLAUDE.md (harness docs ONLY, never source) so session logs survive |
 | `scripts/fable-relay.sh` | Ralph-style fresh-context relay: headless sessions complete one milestone each until a DONE sentinel (hard iteration cap) |
 | `skills/judge-panel` | independent candidates → Opus judges hunting failure modes → synthesis |
 | `agents/verifier` | refuter: "reading is not verification — run it"; guards against verification avoidance and first-80% seduction |
@@ -166,6 +168,15 @@ practice and the Ralph loop):
    rule in its right home (style / skill guard / gate pattern / project
    CLAUDE.md), version-bump, push. Because the plugin is one git repo installed
    everywhere, a fix lands globally with a single `plugin update`.
+
+Per-project layer (created by `scaffold`, maintained by the domain agents it
+generates): `.fable/WORKLOG.md` — one tagged entry per significant session,
+pointers only (commit SHAs, paths, INSIGHTS refs — the anti-bloat rule: point,
+don't restate); `.fable/INSIGHTS.md` — the analysis ledger; domain agents
+(data-engineering / analysis / frontend / backend) whose first action is reading
+those docs and whose last action is updating them. The judgment half (what to
+log) is the model's job in-session; the SessionEnd hook is the mechanical safety
+net that commits it.
 
 ## Update
 

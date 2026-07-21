@@ -29,7 +29,8 @@ feedback that recurred, commands the harness misclassified.
 | Skill over/under-triggering | that skill's description or scale guard |
 | Gate false-block / false-pass | `hooks/scripts/verify-gate.sh` pattern list |
 | Repo-specific convention miss | that project's CLAUDE.md or `.claude/rules/` — NOT the plugin |
-| A check worth automating per-push | suggest a lint/test/CI review agent to the user (repo-level; plugin only suggests) |
+| A check worth automating per-push | suggest a bespoke lint/test whose ERROR MESSAGE includes the remediation ("error messages are prompts"); repo-level — plugin only suggests |
+| Same code-level slop class recurring | suggest a test about the source itself (file length caps, dedup of schemas/helpers, dependency edges) |
 
 ## 3. Apply, verify, ship
 
