@@ -14,7 +14,9 @@ from bloating. Never overwrite existing files — merge into them.
 
 ## 1. Create the durable docs home: `.fable/`
 
-**`.fable/WORKLOG.md`** — the session log. Prepend this convention header:
+**`.fable/WORKLOG.md`** — the session log. Prepend this convention header (if it
+already exists from a previous scaffold run, do NOT re-add it — only reconcile
+differences):
 
 ```markdown
 # Worklog — tagged pointers, not prose

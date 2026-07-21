@@ -24,6 +24,8 @@ project's existing docs location if one is established).
 ## Curation rules (the ledger is curated, not appended)
 
 - Duplicate or refined finding → UPDATE the existing entry, never add a second.
+  Keep the entry's date+title line stable when updating (WORKLOG points at it);
+  refine the body instead.
 - Refuted finding → change Status to REFUTED with the counter-evidence; do not
   delete — a recorded dead end prevents re-running the same rabbit hole.
 - Evidence must be reproducible: the query/notebook/command that regenerates the

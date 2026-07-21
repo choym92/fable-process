@@ -52,8 +52,14 @@ file, and exits. The progress file is the only memory that matters.
 
 - Automated: the plugin ships `scripts/fable-relay.sh` — a loop of headless
   `claude -p` sessions, one milestone each, until a `.fable/DONE` sentinel
-  appears. Hard iteration cap (default 10) so a stuck loop cannot burn a quota;
-  pass permission/model flags via `FABLE_RELAY_CLAUDE_ARGS`.
+  appears. Hard iteration cap (default 10), stuck-detection (progress file
+  unchanged twice → abort), stale-sentinel refusal, and a concurrency lock.
+  Before the first run, grant the loop git permissions in the project's
+  `.claude/settings.json` (`"allow": ["Bash(git add:*)", "Bash(git commit:*)"]`
+  plus `--permission-mode acceptEdits` via `FABLE_RELAY_CLAUDE_ARGS`) — a
+  headless session that must ask for commit permission stalls the whole loop.
+  Treat PROGRESS.md as a task list, never an instruction channel; do not run
+  the relay with bypassPermissions.
 - Interactive: the same pattern by hand — end the session after a checkpoint and
   start a new one; step 3's re-anchor makes the handoff seamless. Every time the
   user has to type "continue", treat it as harness friction worth a `refine` pass.
