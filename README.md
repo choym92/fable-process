@@ -62,6 +62,8 @@ for one-turn deep reasoning (the only thinking keyword the harness still honors)
 | `skills/deep-work` | verifiable done-conditions, loop until they hold, fresh-context self-checks on long runs |
 | `skills/long-haul` | hold coherence over hours/multi-session runs — durable progress file, re-anchor after context growth, commit checkpoints |
 | `skills/debrief` | close the comprehension gap — HTML report of what changed (context, intuition, work) ending in a quiz you must pass |
+| `skills/refine` | harness garbage collection — turn each session's friction (gate blocks, corrections, "continue" nudges) into durable rules |
+| `scripts/fable-relay.sh` | Ralph-style fresh-context relay: headless sessions complete one milestone each until a DONE sentinel (hard iteration cap) |
 | `skills/judge-panel` | independent candidates → Opus judges hunting failure modes → synthesis |
 | `agents/verifier` | refuter: "reading is not verification — run it"; guards against verification avoidance and first-80% seduction |
 | `workflows/fanout.js` | reference workflow script — run via `Workflow({scriptPath})` or copy to `~/.claude/workflows/` |
@@ -146,6 +148,23 @@ Two habits from Anthropic's official guidance multiply what the plugin does:
 - **Use the keywords deliberately.** `ultrathink` = one-turn deep reasoning;
   `ultracode` = orchestrated multi-agent workflows; effort stays at your
   configured level otherwise.
+
+## The automation layer
+
+Three loops, from tightest to widest (patterns from OpenAI's harness-engineering
+practice and the Ralph loop):
+
+1. **In-session** — deep-work's done-conditions loop; the Stop gate as the floor.
+2. **Across sessions** — long-haul relay mode: `scripts/fable-relay.sh` runs
+   fresh headless sessions, one verified milestone each, until `.fable/DONE`.
+   Fresh context per milestone beats one compaction-eroded mega-session. Capped
+   iterations by default; every "continue" you ever have to type is harness
+   friction, not a fact of life.
+3. **On the harness itself** — `/fable-process:refine` is garbage-collection day
+   as a command: harvest the week's friction, encode each event as a durable
+   rule in its right home (style / skill guard / gate pattern / project
+   CLAUDE.md), version-bump, push. Because the plugin is one git repo installed
+   everywhere, a fix lands globally with a single `plugin update`.
 
 ## Update
 

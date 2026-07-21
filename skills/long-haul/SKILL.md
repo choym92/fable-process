@@ -42,6 +42,22 @@ is authoritative for DECISIONS and SCOPE; for factual claims about the code,
 current observation wins — update the file when reality disagrees with it. Do not
 re-derive settled decisions or re-litigate closed branches.
 
+## 3b. Relay mode (automation — for work outliving any single session)
+
+One long session erodes: compaction summarizes away detail, and the agent starts
+trusting its summary of the work over the work. The alternative that scales is a
+fresh-context relay: each milestone runs in a FRESH session that reads the
+progress file, does exactly one milestone, verifies, checkpoints, updates the
+file, and exits. The progress file is the only memory that matters.
+
+- Automated: the plugin ships `scripts/fable-relay.sh` — a loop of headless
+  `claude -p` sessions, one milestone each, until a `.fable/DONE` sentinel
+  appears. Hard iteration cap (default 10) so a stuck loop cannot burn a quota;
+  pass permission/model flags via `FABLE_RELAY_CLAUDE_ARGS`.
+- Interactive: the same pattern by hand — end the session after a checkpoint and
+  start a new one; step 3's re-anchor makes the handoff seamless. Every time the
+  user has to type "continue", treat it as harness friction worth a `refine` pass.
+
 ## 4. Don't self-truncate
 
 Do not stop, summarize, or propose a new session on account of context length. The
