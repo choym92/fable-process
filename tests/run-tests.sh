@@ -57,11 +57,14 @@ expect "source change → untouched"           2 "$(commits)"
 expect "source stays uncommitted"            1 "$(git -C "$R" status --porcelain | grep -c app.py)"
 echo "stale" > "$R/.fable/DONE"; echo "<html>" > "$R/.fable/report.html"; echo "more" >> "$R/.fable/WORKLOG.md"
 (cd "$R" && bash "$SLOG")
-expect "junk in .fable NOT committed"        0 "$(git -C "$R" ls-files | grep -c -e DONE -e report.html)"
+expect "junk in .fable NOT committed"        0 "$(git -C "$R" ls-files | grep -c -e '.fable/DONE' -e report.html)"
 expect "worklog update still committed"      3 "$(commits)"
+mkdir -p "$R/.fable/raw"; echo "verbatim report" > "$R/.fable/raw/2026-07-21_topic.md"
+(cd "$R" && bash "$SLOG")
+expect "raw layer IS committed (lossless)"   1 "$(git -C "$R" ls-files | grep -c 'raw/2026-07-21_topic.md')"
 mkdir -p "$R/sub"; echo "even more" >> "$R/.fable/WORKLOG.md"
 (cd "$R/sub" && bash "$SLOG")
-expect "subdir cwd → still commits (H1)"     4 "$(commits)"
+expect "subdir cwd → still commits (H1)"     5 "$(commits)"
 R2="$TMP/repo2"; mkdir -p "$R2/.fable"; git -C "$R2" init -q; git -C "$R2" commit -q --allow-empty -m init
 printf '.fable/\n' > "$R2/.gitignore"; echo "log" > "$R2/.fable/WORKLOG.md"; echo "# proj" > "$R2/CLAUDE.md"
 (cd "$R2" && bash "$SLOG")

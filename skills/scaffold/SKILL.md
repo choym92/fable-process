@@ -31,6 +31,28 @@ Tags (fixed vocabulary): #data-eng #analysis #frontend #backend #harness
 **`.fable/INSIGHTS.md`** — analysis findings ledger (format from the `insights`
 skill: claim + reproducible evidence + affected decision + status).
 
+**`.fable/raw/`** — the lossless layer. Subagent reports (deep-research dumps,
+UX/community investigations) are load-bearing but huge and die in session
+scratch. Save them here verbatim, named `YYYY-MM-DD_topic.md`. This directory is
+NEVER auto-loaded — it is a grep-only vault, reached by one hop from a curated
+note's pointer. Add an INDEX.md that lists each file with a one-line "what it
+is", and states "do not bulk-load; grep for keywords or follow a note's pointer".
+
+## 1b. The three-layer memory contract (dieting and losslessness are layers, not a trade)
+
+| Layer | Home | Rule | Lossy? |
+|---|---|---|---|
+| 1 — entry point | STATE/CLAUDE.md/INDEX | budgeted (auto-loaded every session — keep small) | relocation only |
+| 2 — curated notes | INSIGHTS.md, WORKLOG.md | compress + "which decision it changed" + pointer to raw | compressed, raw one hop away |
+| 3 — raw originals | `.fable/raw/` | subagent reports verbatim; grep-only, never auto-loaded | lossless |
+
+The point of the raw layer is that "does the summary really reflect the source?"
+is always one hop away. The point of NOT auto-loading it is our own research
+finding: bulk-loading stale originals degrades accuracy and makes outdated text
+read as truth (a hallucination path). Curated layer first; raw is for
+verification and re-mining. Rule going forward: any investigation that changed a
+decision is saved as a PAIR — curated note (layer 2) + raw report (layer 3).
+
 ## 2. Generate domain agents: `.claude/agents/<domain>.md`
 
 One per requested domain, `model: sonnet`, with this duty structure:

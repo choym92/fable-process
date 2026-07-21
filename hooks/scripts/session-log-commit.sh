@@ -19,10 +19,10 @@ if [ -e "$GITDIR/MERGE_HEAD" ] || [ -e "$GITDIR/REBASE_HEAD" ] \
 fi
 git symbolic-ref -q HEAD >/dev/null 2>&1 || exit 0
 
-CANDIDATES=".fable/WORKLOG.md .fable/INSIGHTS.md .fable/PROGRESS.md CLAUDE.md"
+CANDIDATES=".fable/WORKLOG.md .fable/INSIGHTS.md .fable/PROGRESS.md .fable/raw CLAUDE.md"
 STAGED=""
 for p in $CANDIDATES; do
-  [ -f "$p" ] || continue
+  [ -e "$p" ] || continue
   git check-ignore -q "$p" 2>/dev/null && continue
   st="$(git status --porcelain -- "$p" 2>/dev/null | cut -c1-2)"
   case "$st" in

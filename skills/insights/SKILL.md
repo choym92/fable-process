@@ -30,6 +30,12 @@ project's existing docs location if one is established).
   delete — a recorded dead end prevents re-running the same rabbit hole.
 - Evidence must be reproducible: the query/notebook/command that regenerates the
   number, not a prose recollection of it.
+- If the finding came from a bulky subagent report (deep-research, UX/community
+  investigation), save that report verbatim to `.fable/raw/YYYY-MM-DD_topic.md`
+  and point the entry's Evidence line at it. The ledger stays a curated summary
+  layer; the raw layer is the lossless original one hop away. Never paste the
+  full report into the ledger — that reintroduces the bloat the ledger exists to
+  prevent. Raw is grep-only, never auto-loaded.
 - No narrative, no chat transcript — claims with evidence only. If an entry
   needs three paragraphs, it is probably three entries or not yet understood.
 
