@@ -6,6 +6,7 @@ set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GATE="$ROOT/hooks/scripts/verify-gate.sh"
 SLOG="$ROOT/hooks/scripts/session-log-commit.sh"
+SSTART="$ROOT/hooks/scripts/session-start-index.sh"
 RELAY="$ROOT/scripts/fable-relay.sh"
 
 pass=0; fail=0
@@ -75,6 +76,18 @@ mkdir -p "$R3/.git-fake"; touch "$R3/.git/MERGE_HEAD"; mkdir -p "$R3/.fable"; ec
 (cd "$R3" && bash "$SLOG")
 expect "mid-merge → refuses to act (M1)"     0 "$(git -C "$R3" diff --cached --name-only | wc -l | tr -d ' ')"
 (cd "$TMP" && bash "$SLOG"); expect "non-git dir → exit 0" 0 "$?"
+
+echo "session-start-index.sh:"
+SS="$TMP/ssrepo"; mkdir -p "$SS"; git -C "$SS" init -q
+out=$(cd "$SS" && echo '{"source":"startup"}' | bash "$SSTART")
+expect "no INDEX → silent"                   "" "$out"
+mkdir -p "$SS/.fable"; echo "# TOC" > "$SS/.fable/INDEX.md"
+out=$(cd "$SS" && echo '{"source":"startup"}' | bash "$SSTART")
+expect "INDEX present → emits additionalContext" 1 "$(printf '%s' "$out" | grep -c additionalContext)"
+expect "pointer names INDEX.md"              1 "$(printf '%s' "$out" | grep -c 'INDEX.md')"
+mkdir -p "$SS/deep/nested"
+out=$(cd "$SS/deep/nested" && echo '{"source":"startup"}' | bash "$SSTART")
+expect "subdir cwd → still finds INDEX"      1 "$(printf '%s' "$out" | grep -c additionalContext)"
 
 echo "fable-relay.sh (stubbed claude):"
 RL="$TMP/relay"; mkdir -p "$RL/bin" "$RL/.fable"; echo "- [ ] m1" > "$RL/.fable/PROGRESS.md"

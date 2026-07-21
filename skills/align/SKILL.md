@@ -28,4 +28,4 @@ misunderstanding.
 6. Once open branches are resolved (typically 3–7 questions), present a compact
    build spec: what will be built, what explicitly won't, and the done-conditions.
 7. Do NOT start implementation until the user confirms shared understanding. Then
-   execute with deep-work discipline using the agreed done-conditions.
+   hand off to the `deep-work` skill, using the agreed spec as its done-conditions.

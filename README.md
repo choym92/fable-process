@@ -65,7 +65,8 @@ for one-turn deep reasoning (the only thinking keyword the harness still honors)
 | `skills/refine` | harness garbage collection — turn each session's friction (gate blocks, corrections, "continue" nudges) into durable rules |
 | `skills/insights` | insight ledger for analysis work — curated INSIGHTS.md so findings survive context bloat and session ends |
 | `skills/scaffold` | bootstrap a project's harnessed environment — .fable/ docs, tagged pointer-based WORKLOG convention, per-domain agents that read & maintain it |
-| `hooks/session-log-commit.sh` | SessionEnd safety net: auto-commits `.fable/` + CLAUDE.md (harness docs ONLY, never source) so session logs survive |
+| `hooks/session-start-index.sh` | SessionStart: injects a pointer to `.fable/INDEX.md` + WORKLOG state (scaffolded projects only) so every session starts oriented |
+| `hooks/session-log-commit.sh` | SessionEnd safety net: auto-commits harness docs allowlist (WORKLOG/INSIGHTS/PROGRESS/raw + CLAUDE.md, never source) so session logs survive |
 | `scripts/fable-relay.sh` | Ralph-style fresh-context relay: headless sessions complete one milestone each until a DONE sentinel (hard iteration cap) |
 | `skills/judge-panel` | independent candidates → Opus judges hunting failure modes → synthesis |
 | `agents/verifier` | refuter: "reading is not verification — run it"; guards against verification avoidance and first-80% seduction |
@@ -137,6 +138,34 @@ flowchart TD
 | "audit / sweep everything" | `fanout` | no (announces cost if >~10 agents) |
 | "which approach should we…" | `judge-panel` | no (recommends, doesn't menu) |
 | multi-day / multi-session build | `long-haul` | only at real checkpoints |
+
+## The skill graph (skills invoke skills)
+
+Skills reference each other by name and hand off automatically — you rarely invoke
+more than the first one:
+
+```
+align ──(spec confirmed)──▶ deep-work ──(findings)──▶ insights ──(bulky report)──▶ raw/
+  │                              │
+  │                              └─(substantial change)──▶ debrief (report + quiz)
+  ▼
+(large sweep) fanout ──(verified findings)──▶ insights
+(spans sessions) long-haul ──(each milestone)──▶ deep-work; ──(close-out)──▶ debrief
+(design fork) judge-panel
+scaffold ─ sets up the whole graph for a project
+refine ─ the meta-loop: turns friction in ANY of the above into durable rules
+```
+
+## Lifecycle automation (start → work → end)
+
+- **Session start** — `hooks/session-start-index.sh` injects a pointer to
+  `.fable/INDEX.md` (the project's table of contents) plus recent WORKLOG state.
+  Fires only in scaffolded projects; static conventions stay in CLAUDE.md so
+  nothing is duplicated into every session.
+- **During work** — the skill graph above; the verify gate as the floor.
+- **Session end** — `hooks/session-log-commit.sh` commits the harness docs
+  (allowlist only, never source). Judgment (what to log) is the model's job
+  in-session; the hooks are the mechanical bookends.
 
 ## How to prompt with it
 

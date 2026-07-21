@@ -14,6 +14,23 @@ from bloating. Never overwrite existing files — merge into them.
 
 ## 1. Create the durable docs home: `.fable/`
 
+**`.fable/INDEX.md`** — the table of contents (layer-1 entry point). The
+SessionStart hook points every session here first, so keep it a MAP, not content:
+
+```markdown
+# <project> — harness index (read me first)
+Durable knowledge lives in .fable/. Read this to know where to look; do not
+duplicate content here — point to it.
+
+- WORKLOG.md — recent significant sessions (tagged, pointers only). Read the tail
+  for current state before starting work.
+- INSIGHTS.md — analysis findings ledger (claim + evidence + status).
+- raw/ — verbatim subagent reports. GREP-ONLY, never bulk-load; INDEX in raw/.
+- Domain agents (.claude/agents/): <list> — delegate matching work to them.
+- Conventions & build/test commands: see CLAUDE.md (static rules live there, not here).
+```
+
+
 **`.fable/WORKLOG.md`** — the session log. Prepend this convention header (if it
 already exists from a previous scaffold run, do NOT re-add it — only reconcile
 differences):
@@ -77,9 +94,20 @@ the worklog convention, the domain agents and when to delegate to them, and the
 rule that every agent reads `.fable/` first. Keep it under ~30 lines — bloated
 instructions get ignored.
 
-## 4. Close the loop
+## 4. Close the loop (the automation lifecycle)
 
-Tell the user: the fable-process SessionEnd hook auto-commits `.fable/` and
-CLAUDE.md changes when a session ends (harness docs only — never source code),
-so the log survives even a forgotten commit. Writing GOOD entries is the model's
-job during the session; the hook is just the safety net.
+The harness runs on a start→work→end cycle, judgment by the model, mechanics by
+hooks:
+
+- **Session start** — the SessionStart hook injects a pointer to `.fable/INDEX.md`
+  and WORKLOG state (fires only when INDEX.md exists). The agent reads the TOC,
+  then the WORKLOG tail, before substantial work.
+- **During work** — skills compose: `align` → `deep-work`; analysis findings →
+  `insights` (bulky reports → `raw/`); big sweeps → `fanout`; long runs →
+  `long-haul`; after significant change → offer `debrief`.
+- **Session end** — the SessionEnd hook auto-commits the harness docs (allowlist
+  only, never source). Writing GOOD WORKLOG/INSIGHTS entries is the model's job
+  during the session; the hook is the safety net. Before ending a significant
+  session, update the WORKLOG entry and sweep new findings into INSIGHTS.
+
+Tell the user this cycle is now active for the project.
