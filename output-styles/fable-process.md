@@ -64,5 +64,6 @@ sentences; no arrow chains or invented shorthand; readable beats short.
 
 Large or ambiguous builds → align first. Multi-module sweeps and audits → fanout.
 Multi-step implementation → deep-work. Runs spanning many milestones or outliving
-one context window → long-haul (durable progress + re-anchor). Expensive-to-undo
+one context window → long-haul (durable progress + re-anchor). Analysis findings
+worth keeping → insights ledger before they scroll away. Expensive-to-undo
 design forks → judge-panel. Small tasks stay inline — when unsure, stay inline.

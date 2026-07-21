@@ -63,6 +63,7 @@ for one-turn deep reasoning (the only thinking keyword the harness still honors)
 | `skills/long-haul` | hold coherence over hours/multi-session runs — durable progress file, re-anchor after context growth, commit checkpoints |
 | `skills/debrief` | close the comprehension gap — HTML report of what changed (context, intuition, work) ending in a quiz you must pass |
 | `skills/refine` | harness garbage collection — turn each session's friction (gate blocks, corrections, "continue" nudges) into durable rules |
+| `skills/insights` | insight ledger for analysis work — curated INSIGHTS.md so findings survive context bloat and session ends |
 | `scripts/fable-relay.sh` | Ralph-style fresh-context relay: headless sessions complete one milestone each until a DONE sentinel (hard iteration cap) |
 | `skills/judge-panel` | independent candidates → Opus judges hunting failure modes → synthesis |
 | `agents/verifier` | refuter: "reading is not verification — run it"; guards against verification avoidance and first-80% seduction |
