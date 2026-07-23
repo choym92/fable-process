@@ -73,6 +73,21 @@ for one-turn deep reasoning (the only thinking keyword the harness still honors)
 | `workflows/fanout.js` | reference workflow script — run via `Workflow({scriptPath})` or copy to `~/.claude/workflows/` |
 | `hooks/verify-gate.sh` | turn-scoped Stop gate, fails open, blocks at most once |
 
+## Starting a new project
+
+One command in an empty directory:
+
+```
+/fable-process:scaffold <domains, e.g. data-engineering analysis backend>
+```
+
+This bootstraps everything: git + .gitignore, a thin CLAUDE.md skeleton,
+`.claude/settings.json` with relay permissions, the `.fable/` three-layer docs
+(INDEX/WORKLOG/INSIGHTS/raw), and per-domain agents. From that moment the
+lifecycle automation is live — SessionStart orients every session, skills
+compose through the graph, SessionEnd commits the logs. Projects with an
+existing mature layout get a bridge (pointer INDEX + agents), not the template.
+
 ## The research behind it
 
 This plugin was not designed from intuition (2026-07-08):

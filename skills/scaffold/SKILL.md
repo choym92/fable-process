@@ -12,6 +12,24 @@ Principle (OpenAI harness practice): docs live in ONE place all processes attach
 to; the log points at artifacts instead of restating them — that is what keeps it
 from bloating. Never overwrite existing files — merge into them.
 
+## 0. Brand-new project? Bootstrap the basics first
+
+If the target is a new/empty directory (no git, no CLAUDE.md), do these BEFORE
+the steps below — the goal is one command → ready to work:
+
+- `git init` + an initial commit; sensible `.gitignore` for the stack (ask the
+  one question "what stack?" only if not inferable).
+- A minimal `CLAUDE.md` skeleton (≤25 lines): what this is (3 lines), how to
+  build/test (fill in as commands emerge), conventions, and the session-start
+  ritual pointing at `.fable/INDEX.md`. Thin on purpose — `refine` grows it
+  from observed friction, never speculation.
+- `.claude/settings.json` with the relay/automation permissions so headless
+  loops work from day one:
+  `{"permissions": {"allow": ["Bash(git add:*)", "Bash(git commit:*)"]}}`
+- If the project already has its own mature layout (a STATE.md, docs/ system),
+  do NOT impose the template — bridge instead: thin `.fable/INDEX.md` pointing
+  at the existing entry points (see the Overmind precedent), agents only.
+
 ## 1. Create the durable docs home: `.fable/`
 
 **`.fable/INDEX.md`** — the table of contents (layer-1 entry point). The
