@@ -40,7 +40,9 @@ verdict=$(tail -n 2000 "$transcript" 2>/dev/null | jq -Rrs '
       elif .type == "assistant"
       then (.message.content[]? | select(.type == "tool_use")
             | if .name == "Edit" or .name == "Write" or .name == "NotebookEdit"
-              then "edit"
+              then ((.input.file_path // .input.notebook_path // "")
+                    | if test("\\.(md|mdx|markdown|rst|txt)$"; "i")
+                      then "docedit" else "edit" end)
               elif .name == "Bash"
               then ((.input.command // "")
                     | if editish_cmd then "edit"

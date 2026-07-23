@@ -24,6 +24,7 @@ B_ENVQ='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bas
 B_SED='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"sed -i '"'"'s/a/b/'"'"' src/app.ts"}}]}}'
 B_JQ='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"jq empty settings.json"}}]}}'
 B_VAL='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"claude plugin validate ."}}]}}'
+E_DOC='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Write","input":{"file_path":"/x/STATE.md"}}]}}'
 
 gate() { local f="$TMP/$1"; shift; printf '%s\n' "$@" > "$f"
   local out; out=$(printf '{"transcript_path":"%s","stop_hook_active":false}' "$f" | "$GATE")
@@ -38,6 +39,9 @@ expect "edit + quoted-env build → pass"      pass  "$(gate e "$U" "$E" "$B_ENV
 expect "sed -i via bash → block"             block "$(gate f "$U" "$B_SED")"
 expect "edit + jq empty → pass"              pass  "$(gate g "$U" "$E" "$B_JQ")"
 expect "edit + plugin validate → pass"       pass  "$(gate h "$U" "$E" "$B_VAL")"
+expect "docs-only edit → pass"               pass  "$(gate j "$U" "$E_DOC")"
+expect "code + docs edit, no verify → block" block "$(gate k "$U" "$E" "$E_DOC")"
+expect "docs edit after verify → pass"       pass  "$(gate l "$U" "$E" "$B_TEST" "$E_DOC")"
 f="$TMP/i"; printf '%s\n' "$U" "$E" > "$f"
 out=$(printf '{"transcript_path":"%s","stop_hook_active":true}' "$f" | "$GATE")
 expect "stop_hook_active → no double block"  pass  "$([ -n "$out" ] && echo block || echo pass)"
