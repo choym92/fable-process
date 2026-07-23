@@ -64,6 +64,17 @@ file, and exits. The progress file is the only memory that matters.
   start a new one; step 3's re-anchor makes the handoff seamless. Every time the
   user has to type "continue", treat it as harness friction worth a `refine` pass.
 
+## 3c. Interactive handoff (the baton — for human-attended session changes)
+
+Relay mode is for headless loops; when YOU end an interactive session with work
+in flight, pass a baton instead: first canonicalize durable facts into their
+proper homes (progress file / STATE / ledgers — never into the baton), then
+write `.fable/HANDOFF.md` with only the EPHEMERAL working context: the next
+first action, in-flight work, sharp edges just discovered. The next session
+absorbs it and DELETES it — a one-shot baton, not a document. If HANDOFF.md
+survives more than one pickup, it has become a stale doc; the durable parts
+belonged in the canonical files. (Pattern proven in the Overmind project.)
+
 ## 4. Don't self-truncate
 
 Do not stop, summarize, or propose a new session on account of context length. The

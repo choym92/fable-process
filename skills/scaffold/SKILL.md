@@ -22,7 +22,9 @@ the steps below — the goal is one command → ready to work:
 - A minimal `CLAUDE.md` skeleton (≤25 lines): what this is (3 lines), how to
   build/test (fill in as commands emerge), conventions, and the session-start
   ritual pointing at `.fable/INDEX.md`. Thin on purpose — `refine` grows it
-  from observed friction, never speculation.
+  from observed friction, never speculation. Include the doc-discipline trio
+  (proven in Overmind): before adding a doc, update an existing one; a stale
+  doc read as truth is worse than no doc; prune to an archive/, don't delete.
 - `.claude/settings.json` with the relay/automation permissions so headless
   loops work from day one:
   `{"permissions": {"allow": ["Bash(git add:*)", "Bash(git commit:*)"]}}`
@@ -77,7 +79,7 @@ is", and states "do not bulk-load; grep for keywords or follow a note's pointer"
 
 | Layer | Home | Rule | Lossy? |
 |---|---|---|---|
-| 1 — entry point | STATE/CLAUDE.md/INDEX | budgeted (auto-loaded every session — keep small) | relocation only |
+| 1 — entry point | STATE/CLAUDE.md/INDEX | LINE-BUDGETED (e.g. 60 lines) — auto-loaded every session; when over budget, push detail down a layer and leave a pointer. Dieting is part of updating, not an extra chore | relocation only |
 | 2 — curated notes | INSIGHTS.md, WORKLOG.md | compress + "which decision it changed" + pointer to raw | compressed, raw one hop away |
 | 3 — raw originals | `.fable/raw/` | subagent reports verbatim; grep-only, never auto-loaded | lossless |
 
