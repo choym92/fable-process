@@ -1,7 +1,7 @@
 {
   "name": "fable-process",
   "description": "Fable 5-style work process on any model: parallel fan-out, adversarial verification, outcome-driven autonomy, light verification gate",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "author": { "name": "Paul Cho", "email": "choym92@gmail.com" },
   "license": "MIT"
 }

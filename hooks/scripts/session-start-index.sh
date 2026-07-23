@@ -15,7 +15,7 @@ INDEX="$ROOT/.fable/INDEX.md"
 command -v jq >/dev/null 2>&1 || exit 0
 
 read -r -d '' MSG <<'EOF'
-This project uses a fable-process harness. Before substantial work, read `.fable/INDEX.md` (the table of contents for this project's durable knowledge) and the tail of `.fable/WORKLOG.md` (recent state). Analysis findings are in `.fable/INSIGHTS.md`. Verbatim source reports in `.fable/raw/` are a grep-only vault — never bulk-load them; follow a note's pointer or grep for keywords. As you work, keep WORKLOG/INSIGHTS current; the SessionEnd hook commits them. Curated layers first; raw is for verification and re-mining.
+This project uses a fable-process harness. Before substantial work, read `.fable/INDEX.md` — the table of contents — and follow its pointers to the current state and curated notes it names (the layout is project-specific; INDEX.md is authoritative). Do not bulk-load any raw/verbatim-report layer it points to; grep it or follow a note's pointer instead. Keep the durable docs current as you work; the SessionEnd hook commits the harness docs. Curated layers first; raw is for verification and re-mining.
 EOF
 
 jq -n --arg ctx "$MSG" '{additionalContext: $ctx}' 2>/dev/null || exit 0
