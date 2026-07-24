@@ -14,6 +14,10 @@ diffs, and evidence-grounded reporting.
 /output-style fable-process   # or "outputStyle": "fable-process" in settings
 ```
 
+Then `/fable-process:help` for the quick reference. To turn the disposition down,
+`/output-style default` — the skills stay available on demand. Not on Claude
+Code? Copy [AGENTS.md](AGENTS.md) into your repo instead.
+
 ## The idea
 
 Fable 5's "way of working" turns out to be mostly reproducible machinery, not
@@ -47,7 +51,7 @@ One always-on layer, three lazy layers:
 | Layer | Mechanism | Context cost | Role |
 |---|---|---|---|
 | Output style | system-prompt injection | ~550 tok while active | The disposition — act-don't-ask, minimal diff, evidence-grounded reports — and routes big work to the skills |
-| Skills (5) | auto-invoke on matching situations, or `/fable-process:<name>` | 1 line each idle; body only on invoke | The procedures: `align`, `fanout`, `deep-work`, `judge-panel`, `setup` |
+| Skills (11) | auto-invoke on matching situations, or `/fable-process:<name>` | 1 line each idle; body only on invoke | The procedures: `align`, `deep-work`, `fanout`, `judge-panel`, `long-haul`, `insights`, `debrief`, `scaffold`, `refine`, `help`, `setup` |
 | Agents (4) | delegated subagent workers | only when used | Tiered cost: Sonnet (`explorer`, `worker`) does the work, Opus xhigh (`verifier`, `judge`) judges it |
 | Hook | shell script on Stop / SubagentStop | 0 tok | Deterministic enforcement: edited-but-unverified → one nudge to verify |
 
